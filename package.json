@@ -1,0 +1,49 @@
+{
+  "name": "CAP_PROJECT",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "dependencies": {
+    "@cap-js/console": "^1.0.2",
+    "@sap/cds": "^9",
+    "express": "^4"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^2",
+    "cds-plugin-ui5": "^0.13.0"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sqlite",
+        "credentials": {
+          "url": "db.sqlite"
+        }
+      },
+      "auth": {
+        "kind": "mocked",
+        "users": {
+          "luca-admin": {
+            "password": "admin",
+            "roles": [
+              "admin"
+            ]
+          },
+          "luca.credentino": {
+            "password": "prova",
+            "roles": [
+              "user"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch-bookshop": "cds watch --open bookshop/index.html?sap-ui-xx-viewCache=false --livereload false"
+  },
+  "private": true,
+  "workspaces": [
+    "app/*"
+  ]
+}
