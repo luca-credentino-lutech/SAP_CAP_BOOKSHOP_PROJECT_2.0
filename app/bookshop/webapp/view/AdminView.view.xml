@@ -1,0 +1,79 @@
+<mvc:View
+    controllerName="bookshop.controller.AdminView"
+    displayBlock="true"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:shellfooter="sap.ushell.ui.footerbar"
+    xmlns:t="sap.ui.table"
+    xmlns:u="sap.ui.unified"
+    xmlns:c="sap.ui.core"
+>
+    <Page
+        id="AdminView"
+        showFooter="true"
+    >
+    <Button class="sapUiTinyMargin" press="onLogOff" icon="sap-icon://log" ></Button>
+        <content>
+            <Table
+                id="tableAdmin"
+                growing="true"
+                items="{
+                    path: '/Libri',
+                    parameters: {
+                        $select: 'ID,titolo,descrizione,genere,stock,prezzo,autore_ID',
+                        $expand: {
+                            autore: {
+                                $select: 'ID,nome'
+                            }
+                        }
+                    }
+                }"
+            >
+                <columns>
+                    <Column>
+                        <Text text="titolo" />
+                    </Column>
+                    <Column>
+                        <Text text="descrizione" />
+                    </Column>
+                    <Column>
+                        <Text text="autore" />
+                    </Column>
+                    <Column>
+                        <Text text="genere" />
+                    </Column>
+                    <Column>
+                        <Text text="stock" />
+                    </Column>
+                    <Column>
+                        <Text text="prezzo" />
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{titolo}" />
+                            <Text text="{descrizione}" />
+                            <Text text="{autore/nome}" />
+                            <Text text="{descrizione}" />
+                            <Text text="{stock}" />
+                            <Text text="{prezzo}" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+
+        <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button class="sapUiTinyMarginBegin"
+                    icon="sap-icon://add-coursebook"
+                    text="Aggiungi Libro"
+                    type="Emphasized"
+                    press="AggiungiLibro"
+                />
+            </OverflowToolbar>
+        </footer>
+    </Page>
+</mvc:View>

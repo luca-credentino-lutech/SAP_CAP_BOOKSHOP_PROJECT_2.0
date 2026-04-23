@@ -1,0 +1,62 @@
+<mvc:View controllerName="bookshop.controller.UserView"
+    displayBlock="true"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m">
+    <Page id="UserView">
+    <content>
+    <Button press="onLogOff" icon="sap-icon://log" ></Button>
+            <Table
+                id="tableUser"
+                growing="true"
+                items="{
+        path: '/Libri',
+        parameters: {
+            $select: 'ID,titolo,descrizione,genere,stock,prezzo,autore_ID',
+            $expand: {
+                autore: {
+                    $select: 'ID,nome'
+                }
+            }
+        }
+    }"
+            >
+                <columns>
+                    <Column>
+                        <Text text="titolo" />
+                    </Column>
+                    <Column>
+                        <Text text="descrizione" />
+                    </Column>
+                    <Column>
+                        <Text text="autore" />
+                    </Column>
+                    <Column>
+                        <Text text="genere" />
+                    </Column>
+                    <Column>
+                        <Text text="stock" />
+                    </Column>
+                    <Column>
+                        <Text text="prezzo" />
+                    </Column>
+                    <Column>
+                        <Text text="Azione" />
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{titolo}" />
+                            <Text text="{descrizione}" />
+                            <Text text="{autore/nome}" />
+                            <Text text="{descrizione}" />
+                            <Text text="{stock}" />
+                            <Text text="{prezzo}" />
+                            <Button icon="sap-icon://cart" press="AcquistaLibro"></Button>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+</mvc:View>

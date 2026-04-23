@@ -1,11 +1,23 @@
-using { sap.capire.bookshop as my } from '../db/schema';
-service CatalogService @(path:'/browse') { 
+using { sap.capire.bookshop as db } from '../db/schema';
 
-  @readonly entity Books as select from my.Books {*,
-    author.name as author
-  } excluding { createdBy, modifiedBy };
 
-  @requires: 'authenticated-user'
-  action submitOrder (book: Books:ID, quantity: Integer);
-  
+service AdminService {
+    entity Libri as projection on db.Libri;
+    entity Autore as projection on db.Autore;
 }
+
+
+service UserService {
+    @readonly entity Libri as projection on db.Libri;
+}
+
+
+service AuthService {
+    
+    function getUser() returns String; 
+}
+
+//chiunque sia loggato (admin o user)  chiama AuthService
+annotate AuthService with @(restrict: [
+    { grant: 'READ', to: 'authenticated-user' }
+]);

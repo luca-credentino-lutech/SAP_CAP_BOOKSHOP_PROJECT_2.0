@@ -1,26 +1,19 @@
-using { Currency, managed, sap } from '@sap/cds/common';
+using { managed } from '@sap/cds/common';
 namespace sap.capire.bookshop; 
 
-entity Books : managed { 
-  key ID : Integer;
-  titolo  : localized String(111);
-  descrizione  : localized String(1111);
-  author : Association to Authors;
-  genere  : Association to Genres;
-  stock  : Integer;
+entity Libri : managed { 
+  key ID : UUID;
+  titolo  :  String(100);
+  descrizione  : String(1000);
+  autore : Association to Autore;
+  genere  : String(100);
+  stock  : Integer; //quantità
   prezzo  : Decimal(9,2);
-  currency : Currency;
 }
 
-entity Authors : managed { 
-  key ID : Integer;
-  name   : String(111);
-  books  : Association to many Books on books.author = $self;
+entity Autore : managed { 
+  key ID : UUID;
+  nome   : String(100);
+  libri  : Association to many Libri on libri.autore = $self;
 }
 
-
-entity Genres { 
-  key ID   : Integer;
-  parent   : Association to Genres;
-  children : Composition of many Genres on children.parent = $self;
-}

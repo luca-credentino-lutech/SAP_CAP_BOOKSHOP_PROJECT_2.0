@@ -98,12 +98,32 @@
           "target": [
             "TargetView1"
           ]
+        },
+        {
+          "name": "UserView",
+          "pattern": "User",
+          "target": [
+            "TargetUserView"
+          ]
+        },
+        {
+          "name": "AdminView",
+          "pattern": "Admin",
+          "target": "TargetAdminView"
         }
       ],
       "targets": {
         "TargetView1": {
           "id": "View1",
           "name": "View1"
+        },
+        "TargetUserView": {
+          "id": "UserView",
+          "name": "UserView"
+        },
+        "TargetAdminView": {
+          "id": "AdminView",
+          "name": "AdminView"
         }
       }
     },

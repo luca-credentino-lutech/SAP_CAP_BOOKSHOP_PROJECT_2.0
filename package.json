@@ -20,16 +20,15 @@
         }
       },
       "auth": {
-        "kind": "mocked",
         "users": {
-          "luca-admin": {
+          "admin": {
             "password": "admin",
             "roles": [
               "admin"
             ]
           },
           "luca.credentino": {
-            "password": "prova",
+            "password": "user",
             "roles": [
               "user"
             ]
