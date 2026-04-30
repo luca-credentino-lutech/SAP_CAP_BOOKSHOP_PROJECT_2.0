@@ -1,0 +1,31 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+
+    <Dialog
+        id="aggiungiLibroID"
+        title="Aggiungi Libro">
+    
+        <VBox class="sapUiSmallMargin">
+            <Input id="InputTitolo" class="sapUiTinyMarginBottom" required="true" placeholder="Titolo" value="" />
+            <Input id="InputDescr" class="sapUiTinyMarginTop" required="true" placeholder="Descrizione" value="" />
+            <Input id="InputAutore" class="sapUiTinyMarginTop" required="true" placeholder="Autore" value="" />
+            <Input id="InputStock" class="sapUiTinyMarginTop" required="true" type="Number" placeholder="Stock" value="" />
+            <Input id="InputPrezzo" class="sapUiTinyMarginTop" required="true" type="Number" placeholder="Prezzo" value="" />
+        </VBox>
+
+        <beginButton>
+            <Button
+                icon="sap-icon://save"
+                type="Emphasized"
+                press="onSalvaLibro" />
+        </beginButton>
+
+        <endButton>
+            <Button
+                icon="sap-icon://decline"
+                press="onChiudi" />
+        </endButton>
+
+    </Dialog>
+</core:FragmentDefinition>

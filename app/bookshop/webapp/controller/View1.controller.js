@@ -7,10 +7,9 @@ sap.ui.define([
     return Controller.extend("bookshop.controller.View1", {
         onInit() {
 
-            debugger;
             const that = this
-            
-            $.ajax({ 
+
+            $.ajax({
                 // è una funzione fornita dalla libreria jQuery (inclusa nativamente in SAPUI5) 
 
                 // utilizzata per effettuare richieste HTTP asincrone verso un server (cap)
@@ -19,7 +18,7 @@ sap.ui.define([
 
                 method: "GET",
                 success: function (data) {
-                    
+
                     console.log(data.id)
                     if (data.id === "admin") {
 
@@ -36,6 +35,12 @@ sap.ui.define([
             });
 
         },
+        onRouteMatched: function (oEvent) {
+            localStorage.clear();
+            sessionStorage.clear()
+
+        },
+
 
     });
 });

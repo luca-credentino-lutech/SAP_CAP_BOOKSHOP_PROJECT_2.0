@@ -2,7 +2,7 @@
     displayBlock="true"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m">
-    <Page id="UserView">
+    <Page showNavButton="false"  id="UserView">
     <content>
     <Button press="onLogOff" icon="sap-icon://log" ></Button>
             <Table
@@ -52,7 +52,7 @@
                             <Text text="{descrizione}" />
                             <Text text="{stock}" />
                             <Text text="{prezzo}" />
-                            <Button icon="sap-icon://cart" press="AcquistaLibro"></Button>
+                            <Button  id="carrelloBtn" icon="sap-icon://cart" press="AcquistaLibro"></Button>
                         </cells>
                     </ColumnListItem>
                 </items>

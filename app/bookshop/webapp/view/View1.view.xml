@@ -4,6 +4,7 @@
     xmlns="sap.m"
 >
     <Page
+    showNavButton="false" 
         id="page"
         title="{i18n>title}">
         <content>
