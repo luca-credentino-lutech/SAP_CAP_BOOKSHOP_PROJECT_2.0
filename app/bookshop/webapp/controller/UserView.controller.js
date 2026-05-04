@@ -7,48 +7,83 @@ sap.ui.define([
 
     return Controller.extend("bookshop.controller.UserView", {
         onInit() {
+
+
         },
 
         onLogOff() {
             localStorage.clear();
             sessionStorage.clear()
             this.getOwnerComponent().getRouter().navTo("RouteView1");
-        },
-        async AcquistaLibro(oEvent) {
-            debugger;
-            const oData = oEvent.getSource().getBindingContext().getObject()
-            let iStock = oData.stock
-            let sID = oData.ID
 
-            if (iStock != 0) {
-                iStock = iStock - 1
-            } else {
-                var oButton = oEvent.getSource();
-                oButton.setEnabled(false);
+        },
+
+        async AcquistaLibro() {
+            const oTable = this.byId("tableUser");
+            const aSelectedItems = oTable.getSelectedItems();
+
+            if (aSelectedItems.length === 0) {
+                MessageToast.show("Nessun libro selezionato");
+                return;
             }
 
-            const oPayloadStock = {
-                ID: sID,
-                stock: iStock
-            };
+            const aLibri = aSelectedItems.map(oItem =>
+                oItem.getBindingContext().getObject()
+            );
 
+            const aDisponibili = aLibri.filter(libro => libro.stock > 0);
+            const aNonDisponibili = aLibri.filter(libro => libro.stock === 0);
+            const sTitoliDisponibili = aDisponibili.map(elem => { return elem.titolo})
+            const sTitoloNonDisponibili = aNonDisponibili.map(elem => { return elem.titolo})
+
+            if (aDisponibili.length === 0) {
+                MessageToast.show(`${sTitoloNonDisponibili} non sono disponibili, mi spiace `);
+                return;
+            }
+            
+
+            if (aNonDisponibili.length > 0) {
+
+                MessageToast.show(`Solo ${sTitoliDisponibili} libri è/sono disponibili, seleziona solo quello/i disponbile per acquistarlo`);
+            }
+
+            if (aDisponibili.length > 0 && aNonDisponibili.length === 0) {
+
+                for (const SingoloLibro of aDisponibili) {
+                    await this.AcquistaFetch(
+                        SingoloLibro.ID,
+                        Number(SingoloLibro.stock) - 1
+                    );
+                }
+
+                this.getView().getModel().refresh();
+                MessageToast.show(`Hai acquistato ${sTitoliDisponibili} libro/i`);
+
+            }
+        },
+
+        async AcquistaFetch(ID, Stock) {
+            let oPayloadStock = {
+                ID: ID,
+                stock: Stock
+            };
             try {
-                const oRisposta = await fetch("/odata/v4/user/aggiornaStock", {
+                let oRisposta = await fetch("/odata/v4/user/aggiornaStock", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify(oPayloadStock)
                 });
-                const oLibroAggiornato = await oRisposta.json();
-                const oModel = this.getView().getModel();
+                let oLibroAggiornato = await oRisposta.json();
+                let oModel = this.getView().getModel();
+
                 oModel.refresh()
-                MessageToast.show("Acquistato");
 
             } catch (oError) {
-                console.error(oError);
+                console.log(oError);
             }
-        }
+        },
 
     });
 });

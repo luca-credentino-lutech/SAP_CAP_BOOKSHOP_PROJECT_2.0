@@ -1,11 +1,22 @@
-<mvc:View controllerName="bookshop.controller.UserView"
+<mvc:View
+    controllerName="bookshop.controller.UserView"
     displayBlock="true"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns="sap.m">
-    <Page showNavButton="false"  id="UserView">
-    <content>
-    <Button press="onLogOff" icon="sap-icon://log" ></Button>
+    xmlns:t="sap.ui.table"
+    xmlns:shellfooter="sap.ushell.ui.footerbar"
+    xmlns="sap.m"
+>
+    <Page
+        showNavButton="false"
+        id="UserView"
+    >
+        <content>
+            <Button
+                press="onLogOff"
+                icon="sap-icon://log"
+            />
             <Table
+            mode="MultiSelect"
                 id="tableUser"
                 growing="true"
                 items="{
@@ -39,9 +50,6 @@
                     <Column>
                         <Text text="prezzo" />
                     </Column>
-                    <Column>
-                        <Text text="Azione" />
-                    </Column>
                 </columns>
                 <items>
                     <ColumnListItem>
@@ -52,11 +60,23 @@
                             <Text text="{descrizione}" />
                             <Text text="{stock}" />
                             <Text text="{prezzo}" />
-                            <Button  id="carrelloBtn" icon="sap-icon://cart" press="AcquistaLibro"></Button>
                         </cells>
                     </ColumnListItem>
                 </items>
             </Table>
         </content>
+        <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer />
+                <Button
+                    class="sapUiTinyMarginBegin"
+                    icon="sap-icon://cart"
+                    id="acquistaLibroBtn"
+                    text="Acquista"
+                    type="Emphasized"
+                    press="AcquistaLibro"
+                />
+            </OverflowToolbar>
+        </footer>
     </Page>
 </mvc:View>

@@ -58,8 +58,6 @@ module.exports = cds.service.impl(async function () {
         }
     });
 
-
-
     this.on("aggiornaStock", async (req) => {
         try {
             const dati = req.data;

@@ -37,6 +37,7 @@ sap.ui.define([
                 oDialog.open();
             });
         },
+        
 
         onChiudi() {
             this.byId("aggiungiLibroID").close();
