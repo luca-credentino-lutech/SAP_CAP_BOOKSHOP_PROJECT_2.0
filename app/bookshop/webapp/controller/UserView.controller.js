@@ -1,8 +1,9 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
-    "sap/m/MessageToast"
-], (Controller, JSONModel, MessageToast) => {
+    "sap/m/MessageToast",
+    "sap/m/MessageBox"
+], (Controller, JSONModel, MessageToast, MessageBox) => {
     "use strict";
 
     return Controller.extend("bookshop.controller.UserView", {
@@ -23,7 +24,7 @@ sap.ui.define([
             const aSelectedItems = oTable.getSelectedItems();
 
             if (aSelectedItems.length === 0) {
-                MessageToast.show("Nessun libro selezionato");
+                MessageBox.error("Nessun libro selezionato");
                 return;
             }
 
@@ -37,14 +38,14 @@ sap.ui.define([
             const sTitoloNonDisponibili = aNonDisponibili.map(elem => { return elem.titolo})
 
             if (aDisponibili.length === 0) {
-                MessageToast.show(`${sTitoloNonDisponibili} non sono disponibili, mi spiace `);
+                MessageBox.warning(`Il Libro/i: ${sTitoloNonDisponibili}, non sono disponibili, mi spiace `);
                 return;
             }
             
 
             if (aNonDisponibili.length > 0) {
 
-                MessageToast.show(`Solo ${sTitoliDisponibili} libri è/sono disponibili, seleziona solo quello/i disponbile per acquistarlo`);
+                MessageBox.warning(`Solo ${sTitoliDisponibili} è/sono disponibili, seleziona solo quello/i disponbili`);
             }
 
             if (aDisponibili.length > 0 && aNonDisponibili.length === 0) {
@@ -57,7 +58,7 @@ sap.ui.define([
                 }
 
                 this.getView().getModel().refresh();
-                MessageToast.show(`Hai acquistato ${sTitoliDisponibili} libro/i`);
+                MessageBox.success(`Hai acquistato ${sTitoliDisponibili} libro/i`);
 
             }
         },

@@ -3,8 +3,9 @@ sap.ui.define([
     "sap/ui/model/json/JSONModel",
     "sap/ui/core/Fragment",
     "sap/base/util/uid",
-    "sap/m/MessageToast"
-], (Controller, JSONModel, Fragment, uid, MessageToast) => {
+    "sap/m/MessageToast",
+    "sap/m/MessageBox"
+], (Controller, JSONModel, Fragment, uid, MessageToast, MessageBox) => {
     "use strict";
 
     return Controller.extend("bookshop.controller.AdminView", {
@@ -44,26 +45,36 @@ sap.ui.define([
         },
 
         async onSalvaLibro() {
-            const sTitolo = this.byId("InputTitolo").getValue();
-            const sAutore = this.byId("InputAutore").getValue();
-            const sDescrizione = this.byId("InputDescr").getValue();
-            const iStock = this.byId("InputStock").getValue();
-            const fPrezzo = this.byId("InputPrezzo").getValue();
-
+            debugger
+            const sGenere = this.byId("InputGenere")
+            const sTitolo = this.byId("InputTitolo");
+            const sAutore = this.byId("InputAutore");
+            const sDescrizione = this.byId("InputDescr");
+            const iStock = this.byId("InputStock");
+            const fPrezzo = this.byId("InputPrezzo");
+            const aTuttiIcampi = [sTitolo, sAutore, sDescrizione, iStock, fPrezzo];
             const sAutoreID = crypto.randomUUID();
 
             const oPayloadAutore = {
                 ID: sAutoreID,
-                nome: sAutore
+                nome: sAutore.getValue()
             };
 
             const oPayloadLibro = {
-                titolo: sTitolo,
-                descrizione: sDescrizione,
-                stock: iStock,
-                prezzo: fPrezzo,
+                titolo: sTitolo.getValue(),
+                descrizione: sDescrizione.getValue(),
+                genere: sGenere.getValue(),
+                stock: iStock.getValue(),
+                prezzo: fPrezzo.getValue(),
                 autore_ID: sAutoreID
             };
+
+            for(const i of aTuttiIcampi){
+                if(i.getValue() == ""){
+                    MessageBox.error("Compila tutti i campi obbligatori!");
+                    return;
+                }
+            }
 
             try {
                 const oResponseAutore = await fetch("/odata/v4/admin/aggiungiAutore", {
@@ -86,12 +97,24 @@ sap.ui.define([
                 MessageToast.show("Libro aggiunto correttamente");
                  const oModel = this.getView().getModel()
                  oModel.refresh()
+                 aTuttiIcampi.forEach(elem => elem.setValue(""))
                 this.byId("aggiungiLibroID").close();
 
             } catch (oError) {
                 console.error(oError);
             }
         },
+
+        eliminaLibro(oEvent){
+
+            
+
+        },
+
+        modificaLibro(oEvent){
+
+        },
+
     },
     );
 });

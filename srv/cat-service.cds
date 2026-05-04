@@ -8,6 +8,7 @@ service AdminService {
                          titolo: String,
                          autore: String,
                          descrizione: String,
+                         genere: String,
                          stock: Integer,
                          prezzo: Decimal(5, 2),
                          autore_ID: UUID) returns Libri;

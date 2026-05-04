@@ -5,8 +5,8 @@ entity Libri : managed {
   key ID : UUID;
   titolo  :  String(100);
   descrizione  : String(1000);
+   genere  : String(100);
   autore : Association to Autore;
-  genere  : String(100);
   stock  : Integer; //quantità
   prezzo  : Decimal(9,2);
 }

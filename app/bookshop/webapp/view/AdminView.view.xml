@@ -12,8 +12,9 @@
         id="AdminView"
         showFooter="true"
         showNavButton="false" 
+        
     >
-    <Button class="sapUiTinyMargin" press="onLogOff" icon="sap-icon://log" ></Button>
+    <Button  type="Transparent"  class="sapUiTinyMargin" press="onLogOff" icon="sap-icon://log" ></Button>
         <content>
             <Table
                 id="tableAdmin"
@@ -49,6 +50,9 @@
                     <Column>
                         <Text text="prezzo" />
                     </Column>
+                                        <Column>
+                        <Text text="Azioni" />
+                    </Column>
                 </columns>
                 <items>
                     <ColumnListItem>
@@ -56,9 +60,11 @@
                             <Text text="{titolo}" />
                             <Text text="{descrizione}" />
                             <Text text="{autore/nome}" />
-                            <Text text="{descrizione}" />
+                            <Text text="{genere}" />
                             <Text text="{stock}" />
                             <Text text="{prezzo}" />
+                            <HBox ><Button type="Reject" icon="sap-icon://delete" press="eliminaLibro"></Button>
+                            <Button type="Transparent" class="sapUiSmallMarginBegin" icon="sap-icon://edit" press="modificaLibro"></Button></HBox>
                         </cells>
                     </ColumnListItem>
                 </items>
