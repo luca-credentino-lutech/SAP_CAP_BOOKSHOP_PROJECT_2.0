@@ -1,5 +1,5 @@
 const cds = require('@sap/cds');
-const { UPDATE } = require('@sap/cds/lib/ql/cds-ql');
+const { UPDATE, DELETE } = require('@sap/cds/lib/ql/cds-ql');
 
 module.exports = cds.service.impl(async function () {
 
@@ -32,6 +32,39 @@ module.exports = cds.service.impl(async function () {
             await INSERT.into(Libri).entries(nuovoLibro);
 
             return nuovoLibro;
+
+        } catch (err) {
+            console.log(err);
+            return req.error(500, err.message);
+        }
+    });
+
+    this.on("updateLibro", async (req) => {
+
+        try {
+            const dati = req.data;
+
+            const nuovoLibro = {
+                ID: dati.ID,
+                titolo: dati.titolo,
+                descrizione: dati.descrizione,
+                genere: dati.genere,
+                stock: Number(dati.stock),
+                prezzo: Number(dati.prezzo),
+                autore_ID: dati.autore_ID
+            };
+
+            await UPDATE(Libri).set(nuovoLibro)
+                .where({
+                    ID: dati.ID
+                });
+
+
+            const libroAggiornato = await SELECT.one
+                .from(Libri)
+                .where({ ID: dati.ID });
+
+            return libroAggiornato;
 
         } catch (err) {
             console.log(err);
@@ -74,6 +107,30 @@ module.exports = cds.service.impl(async function () {
                 .where({ ID: dati.ID });
 
             return libroAggiornato;
+
+
+        } catch (err) {
+            console.log(err);
+            return req.error(500, err.message);
+        }
+    })
+
+    this.on("eliminaRecord", async (req) => {
+        try {
+            const dati = req.data;
+
+            await DELETE.from(Libri)
+                .where({
+                    ID: dati.ID,
+                    A
+                });
+
+
+             const tabAggiornato = await SELECT.one
+                 .from(Libri)
+                 .where({ ID: dati.ID });
+
+             return tabAggiornato;
 
 
         } catch (err) {

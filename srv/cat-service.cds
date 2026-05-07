@@ -17,6 +17,17 @@ service AdminService {
                           autore_ID: UUID,
                           nome: String, ) returns Autore;
 
+    
+    action updateLibro( ID: UUID,
+                         titolo: String,
+                         autore: String,
+                         descrizione: String,
+                         genere: String,
+                         stock: Integer,
+                         prezzo: Decimal(5, 2),
+                         autore_ID: UUID) returns Libri;
+
+    action eliminaRecord( ID: UUID) returns Libri;
 }
 
 
