@@ -11,7 +11,7 @@ sap.ui.define([
 
     return Controller.extend("bookshop.controller.AdminView", {
         onInit() {
-
+            
         },
         onLogOff() {
 
@@ -73,7 +73,7 @@ sap.ui.define([
             const sDescrizione = this.byId("InputDescr");
             const iStock = this.byId("InputStock");
             const dPrezzo = this.byId("InputPrezzo");
-            const aTuttiIcampi = [sTitolo, sAutore, sDescrizione, iStock, fPrezzo];
+            const aTuttiIcampi = [sTitolo, sAutore, sDescrizione, iStock, dPrezzo];
             const sAutoreID = crypto.randomUUID();
 
             const oPayloadAutore = {

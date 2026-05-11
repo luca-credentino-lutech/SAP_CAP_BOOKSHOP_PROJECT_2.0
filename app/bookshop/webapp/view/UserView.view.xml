@@ -18,6 +18,7 @@
             />
             <Table
             mode="MultiSelect"
+            selectionChange="onSelectionChangeLibro"
                 id="tableUser"
                 growing="true"
                 items="{
@@ -37,30 +38,30 @@
                         <Text text="titolo" />
                     </Column>
                     <Column>
-                        <Text text="descrizione" />
+                        <Text text="Descrizione" />
                     </Column>
                     <Column>
-                        <Text text="autore" />
+                        <Text text="Autore" />
                     </Column>
                     <Column>
-                        <Text text="genere" />
+                        <Text text="Genere" />
                     </Column>
                     <Column>
-                        <Text text="stock" />
+                        <Text text="Quantità" />
                     </Column>
                     <Column>
-                        <Text text="prezzo" />
+                        <Text text="Prezzo" />
                     </Column>
                 </columns>
                 <items>
-                    <ColumnListItem>
+                    <ColumnListItem >
                         <cells>
                             <Text text="{titolo}" />
                             <Text text="{descrizione}" />
                             <Text text="{autore/nome}" />
                             <Text text="{genere}" />
-                            <Text text="{stock}" />
-                            <Text text="{prezzo}" />
+                            <Text id="stockText" text="{stock} disponibili" />
+                            <Text text="{prezzo}€" />
                         </cells>
                     </ColumnListItem>
                 </items>

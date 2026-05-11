@@ -33,22 +33,22 @@
             >
                 <columns>
                     <Column>
-                        <Text text="titolo" />
+                        <Text text="Titolo" />
                     </Column>
                     <Column>
-                        <Text text="descrizione" />
+                        <Text text="Descrizione" />
                     </Column>
                     <Column>
-                        <Text text="autore" />
+                        <Text text="Autore" />
                     </Column>
                     <Column>
-                        <Text text="genere" />
+                        <Text text="Genere" />
                     </Column>
                     <Column>
-                        <Text text="stock" />
+                        <Text text="Quantità" />
                     </Column>
                     <Column>
-                        <Text text="prezzo" />
+                        <Text text="Prezzo" />
                     </Column>
                                         <Column>
                         <Text text="Azioni" />
@@ -62,7 +62,7 @@
                             <Text text="{autore/nome}" />
                             <Text text="{genere}" />
                             <Text text="{stock}" />
-                            <Text text="{prezzo}" />
+                            <Text text="{prezzo}€" />
                             <HBox ><Button type="Reject" icon="sap-icon://delete" press="eliminaLibro"></Button>
                             <Button type="Transparent" class="sapUiSmallMarginBegin" icon="sap-icon://edit" press="modificaLibro"></Button></HBox>
                         </cells>
