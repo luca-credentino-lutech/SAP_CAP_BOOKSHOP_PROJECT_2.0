@@ -1,0 +1,44 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc">
+
+    <Dialog
+        id="carrelloDialog"
+        title="Carrello">
+        <List
+		noDataText="Nessun Libro nel carrello"
+		id="ProductList"
+		growing="true"
+		items="{CarrelloLibri>/items}"
+		itemActionPress="onItemActionPress"
+		itemActionCount="2"
+        >
+		<headerToolbar>
+			<OverflowToolbar>
+				<content>
+					<Title text="Prodotti nel carrello:" level="H2"/>
+				</content>
+			</OverflowToolbar>
+		</headerToolbar>
+		<StandardListItem
+		id="listCarrello"
+			title="{CarrelloLibri>titolo}"
+			description="{CarrelloLibri>descrizione}"
+			counter="{CarrelloLibri>quantita}" >
+		
+			<ListItemAction
+				text="Aggiungi"
+				icon="sap-icon://add"/>
+			 <ListItemAction
+				text="Leva"
+				icon="sap-icon://less"/>
+			 
+		</StandardListItem>	
+	</List>
+	<HBox >
+	<Button class="sapUiTinyMargin" icon="sap-icon://credit-card" press="onAcquistaCarrello" ></Button>
+	<Button class="sapUiTinyMargin" icon="sap-icon://decline" press="onChiudiCarrello" ></Button>
+	</HBox>
+    </Dialog>
+</core:FragmentDefinition>

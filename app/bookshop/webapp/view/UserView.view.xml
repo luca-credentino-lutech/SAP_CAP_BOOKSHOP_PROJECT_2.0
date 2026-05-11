@@ -15,6 +15,7 @@
                 press="onLogOff"
                 icon="sap-icon://log"
                 class="sapUiTinyMargin"
+                type="Transparent"
             />
             <Table
             mode="MultiSelect"
@@ -72,9 +73,17 @@
                 <ToolbarSpacer />
                 <Button
                     class="sapUiTinyMarginBegin"
-                    icon="sap-icon://cart"
+                    icon="sap-icon://cart-4"
+                    id="btnNelCarrello"
+                    text="Inserisci nel carrello"
+                    type="Emphasized"
+                    press="InserisciCarrello"
+                />
+                <Button
+                    class="sapUiTinyMarginBegin"
+                    icon="sap-icon://cart-approval"
                     id="acquistaLibroBtn"
-                    text="Acquista"
+                    text="Acquista con un Click"
                     type="Emphasized"
                     press="AcquistaLibro"
                 />

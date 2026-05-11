@@ -8,11 +8,17 @@
     
         <VBox class="sapUiSmallMargin">
             <Input visible="false" id="InputID" value="" ></Input>
+            <Text class="sapUiTinyMarginTop" text="Titolo:" ></Text>
             <Input id="InputTitolo2" class="sapUiTinyMarginBottom" required="true" placeholder="Titolo"  value="" />
+            <Text class="sapUiTinyMarginTop" text="Descrizione:" ></Text>
             <Input id="InputDescr2" class="sapUiTinyMarginTop" required="true" placeholder="Descrizione" value="" />
+            <Text class="sapUiTinyMarginTop" text="Genere:" ></Text>
             <Input id="InputGenere2" class="sapUiTinyMarginTop" required="true" placeholder="Genere" value="" />
+            <Text class="sapUiTinyMarginTop" text="Autore:" ></Text>
             <Input id="InputAutore2" class="sapUiTinyMarginTop" required="true" placeholder="Autore" value="" />
+            <Text class="sapUiTinyMarginTop" text="Quantità:" ></Text>
             <Input id="InputStock2" class="sapUiTinyMarginTop" required="true" type="Number" placeholder="Stock" value="" />
+            <Text class="sapUiTinyMarginTop" text="Prezzo:" ></Text>
             <Input id="InputPrezzo2" class="sapUiTinyMarginTop" required="true" type="Number" placeholder="Prezzo" value="" />
             <Input visible="false" id="InputAutoreID" value=""  ></Input>
         </VBox>
