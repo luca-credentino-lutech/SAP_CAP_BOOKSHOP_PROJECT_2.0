@@ -132,19 +132,22 @@ sap.ui.define([
 
             const oLibroDati = oContext.getObject();
 
+            const oLibroDatoID = {
+               ID: oLibroDati.ID
+            }
+
            try{ const oRisposta = await fetch("/odata/v4/admin/eliminaRecord", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(oLibroDati.ID)
+                body: JSON.stringify(oLibroDatoID)
             });
-            console.log(oRisposta.body)
             const oModel = this.getView().getModel()
             oModel.refresh()
             MessageToast.show("Record Eliminato correttamente")
         }catch(error){
-            console.log(error)
+            console.log(error.message)
         }
         },
 

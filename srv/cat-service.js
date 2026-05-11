@@ -122,7 +122,6 @@ module.exports = cds.service.impl(async function () {
             await DELETE.from(Libri)
                 .where({
                     ID: dati.ID,
-                    A
                 });
 
 
@@ -134,7 +133,6 @@ module.exports = cds.service.impl(async function () {
 
 
         } catch (err) {
-            console.log(err);
             return req.error(500, err.message);
         }
     })
