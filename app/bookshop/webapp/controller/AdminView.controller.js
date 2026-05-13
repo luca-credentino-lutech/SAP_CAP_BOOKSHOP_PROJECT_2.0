@@ -11,7 +11,7 @@ sap.ui.define([
 
     return Controller.extend("bookshop.controller.AdminView", {
         onInit() {
-            
+
         },
         onLogOff() {
 
@@ -126,29 +126,49 @@ sap.ui.define([
             }
         },
 
-       async eliminaLibro(oEvent) {
+        async eliminaLibro(oEvent) {
 
-             const oContext = oEvent.getSource().getBindingContext();
+            const oContext = oEvent.getSource().getBindingContext();
 
             const oLibroDati = oContext.getObject();
-
+            const that = this
             const oLibroDatoID = {
-               ID: oLibroDati.ID
+                ID: oLibroDati.ID
             }
+            MessageBox.warning(
+                "Vuoi eliminare per davvero?",
+                {
+                    title: "Elimina Record",
+                    actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
+                    emphasizedAction: MessageBox.Action.OK,
 
-           try{ const oRisposta = await fetch("/odata/v4/admin/eliminaRecord", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(oLibroDatoID)
-            });
-            const oModel = this.getView().getModel()
-            oModel.refresh()
-            MessageToast.show("Record Eliminato correttamente")
-        }catch(error){
-            console.log(error.message)
-        }
+                    onClose: async function (oAction) {
+                        if (oAction === MessageBox.Action.OK) {
+
+                            try {
+                                const oRisposta = await fetch("/odata/v4/admin/eliminaRecord", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify(oLibroDatoID)
+                                });
+                                const oModel = that.getView().getModel()
+                                oModel.refresh()
+                                MessageToast.show("Record Eliminato correttamente")
+                            } catch (error) {
+                                console.log(error.message)
+                            }
+
+                        } else {
+
+                            MessageToast.show("Operazione annullata");
+
+                        }
+                    }
+                }
+            );
+
         },
 
         async modificaLibro(oEvent) {

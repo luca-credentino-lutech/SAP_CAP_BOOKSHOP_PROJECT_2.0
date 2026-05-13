@@ -152,18 +152,19 @@ module.exports = cds.service.impl(async function () {
                 const ID = req.data.ID;
                 const prezzo = req.data.prezzo;
 
-                if (!ID || prezzo === null || prezzo === undefined) {
+                if (!ID || prezzo === undefined) {
                     return req.error(400, "Campi obbligatori mancanti: ID e prezzo");
                 }
 
-                const credentials = Buffer
+                const credenziali = Buffer
                     .from(clientId + ":" + clientSecret)
-                    .toString("base64");
+                    .toString("base64"); // questa buffer e il toString("base64") permette di  trasformare clientId:clientSecret in -> Y2xpZW50SWQ6Y2xpZW50U2VjcmV0 
+                    //per poi usarlo nell'header
 
                 const tokenResponse = await fetch(tokenUrl, {
                     method: "POST",
                     headers: {
-                        "Authorization": "Basic " + credentials,
+                        "Authorization": "Basic " + credenziali,
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
                     body: "grant_type=client_credentials"

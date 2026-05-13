@@ -12,33 +12,7 @@ sap.ui.define([
             debugger
 
         },
-        // async onSelectionChangeLibro() {
-        //     debugger
-        //     let oTable = this.byId("tableUser")
-        //     var aItems = oTable.getItems();
-        //     var oCheckBox = oItem.getMode().getSelector();
-        //     oItem.setEnabled(false);
-        //     try {
-        //         let oRisposta = await fetch("/odata/v4/user/Libri", {
-        //             method: "GET"
-        //         });
-        //         debugger
-        //         let oRispostaJSON = await oRisposta.json();
-        //         let stock = oRispostaJSON.value.map(i => (i.stock == 0))
-        //         for (const singoloStock of stock) {
-        //             if (singoloStock == 0) {
-
-        //             }
-        //         }
-        //         let oModel = this.getView().getModel();
-
-        //         oModel.refresh()
-
-        //     } catch (oError) {
-        //         console.log(oError);
-        //     }
-        // },
-
+   
         onSelectionChangeLibro: function (oEvent) {
             const oTable = this.byId("tableUser");
             const oItem = oEvent.getParameter("listItem");
@@ -53,8 +27,10 @@ sap.ui.define([
         },
 
         InserisciCarrello() {
+            debugger;
             const oTable = this.byId("tableUser");
-            const aLibriSelezionati = oTable.getSelectedItems().map(oItem => {
+            const oModel = this.getView().getModel("CarrelloLibri")
+            let aLibriSelezionati = oTable.getSelectedItems().map(oItem => {
                 const oCarrelloLibri = oItem.getBindingContext().getObject()
 
                 return {
@@ -64,11 +40,10 @@ sap.ui.define([
                     descrizione: oCarrelloLibri.descrizione,
                     quantita: 1
 
-
                 }
             }
             )
-
+         
             const oModelCarrello = new JSONModel({
                 items: aLibriSelezionati
             });
@@ -76,6 +51,7 @@ sap.ui.define([
 
             this.ApriCarrello(oModelCarrello);
         },
+
         onChiudiCarrello() {
             this.byId("carrelloDialog").close();
         },
@@ -283,6 +259,11 @@ sap.ui.define([
             const iPrezzo = this.EstraiPrezziSelezionati()
 
             const that = this;
+            if(aSelectedItems.length > 1 ){
+                MessageToast.show("Seleziona solo un libro!");
+                return;
+            
+            }
             if (aSelectedItems.length !== 0) {
                 MessageBox.success(
                     "Vuoi confermare il prodotto e inviarlo a SAP Integration Suite per la fattura?",
@@ -300,8 +281,10 @@ sap.ui.define([
                         }
                     }
                 );
-            } else {
+            }else{
+                
                 MessageToast.show("Seleziona prima un libro!");
+        
             }
 
 
