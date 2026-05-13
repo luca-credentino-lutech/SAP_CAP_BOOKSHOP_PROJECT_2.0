@@ -10,7 +10,7 @@ sap.ui.define([
     return Controller.extend("bookshop.controller.UserView", {
         onInit() {
             debugger
- 
+
         },
         // async onSelectionChangeLibro() {
         //     debugger
@@ -99,14 +99,45 @@ sap.ui.define([
             });
         },
 
-        onAcquistaCarrello(oEvent){
+        async onAcquistaCarrello(oEvent) {
+           
+            try {
+                let oRisposta = await fetch("/odata/v4/user/Libri", {
+                    method: "GET",
 
-        const oModel = this.getView().getModel("CarrelloLibri");
-        const oLibri = oModel.getData().items
-        // oLibri.map(i => {
-        //     this.AcquistaFetch(i.ID, i.quantita)
-        // })
-          
+                });
+                let iNuovaQuantita = 0
+
+                const oModel = this.getView().getModel("CarrelloLibri");
+
+                const oLibri = oModel.getData().items
+
+                let oLibriEntity = await oRisposta.json();
+
+                oLibriEntity.value.map(items => {
+                    const sIDentity = items.ID
+
+                    const iQuantitaCorrente = items.stock
+
+                    oLibri.map(j => {
+                    const sIDlibroCarrello = j.ID
+
+                    const iQuantitaCarrello = j.quantita
+
+                    if (sIDlibroCarrello == sIDentity){
+                        iNuovaQuantita = iQuantitaCorrente - iQuantitaCarrello
+                        
+                        this.AcquistaFetch(sIDlibroCarrello, iNuovaQuantita)
+                    }
+                   
+                 })
+
+                })
+
+            } catch (oError) {
+                console.log(oError);
+            }
+
         },
 
         onItemActionPress(oEvent) {
@@ -131,10 +162,10 @@ sap.ui.define([
                 const iNuovaQuantita = iQuantitaAttuale - 1;
                 oModel.setProperty(sPath + "/quantita", iNuovaQuantita);
 
-                if(iNuovaQuantita == 0){
+                if (iNuovaQuantita == 0) {
                     oItem.mProperties = {}
                 }
-                
+
             }
         },
         async AcquistaLibro() {
