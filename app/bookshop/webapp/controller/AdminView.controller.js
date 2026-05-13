@@ -73,7 +73,7 @@ sap.ui.define([
             const sDescrizione = this.byId("InputDescr");
             const iStock = this.byId("InputStock");
             const dPrezzo = this.byId("InputPrezzo");
-            const aTuttiIcampi = [sTitolo, sAutore, sDescrizione, iStock, dPrezzo];
+            const aTuttiIcampi = [sTitolo, sAutore, sGenere, sDescrizione, iStock, dPrezzo];
             const sAutoreID = crypto.randomUUID();
 
             const oPayloadAutore = {

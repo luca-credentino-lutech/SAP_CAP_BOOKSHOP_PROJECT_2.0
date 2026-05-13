@@ -100,7 +100,7 @@ sap.ui.define([
         },
 
         async onAcquistaCarrello(oEvent) {
-           
+
             try {
                 let oRisposta = await fetch("/odata/v4/user/Libri", {
                     method: "GET",
@@ -120,19 +120,25 @@ sap.ui.define([
                     const iQuantitaCorrente = items.stock
 
                     oLibri.map(j => {
-                    const sIDlibroCarrello = j.ID
+                        const sIDlibroCarrello = j.ID
 
-                    const iQuantitaCarrello = j.quantita
+                        const iQuantitaCarrello = j.quantita
 
-                    if (sIDlibroCarrello == sIDentity){
-                        iNuovaQuantita = iQuantitaCorrente - iQuantitaCarrello
-                        
-                        this.AcquistaFetch(sIDlibroCarrello, iNuovaQuantita)
-                    }
-                   
-                 })
+                        if (sIDlibroCarrello == sIDentity) {
+                            iNuovaQuantita = iQuantitaCorrente - iQuantitaCarrello
+
+                            this.AcquistaFetch(sIDlibroCarrello, iNuovaQuantita)
+
+
+                        }
+
+                    })
 
                 })
+                this.onChiudiCarrello();
+                const oTable = this.byId("tableUser");
+                oTable.removeSelections(true);
+                MessageBox.success(`Pagamento andato a buon fine!`);
 
             } catch (oError) {
                 console.log(oError);
@@ -207,9 +213,11 @@ sap.ui.define([
                 }
 
                 this.getView().getModel().refresh();
-                MessageBox.success(`Hai acquistato ${sTitoliDisponibili}`);
+                MessageBox.success(`Hai acquistato ${sTitoliDisponibili}`)
+
 
             }
+            oTable.removeSelections(true)
         },
 
         async AcquistaFetch(ID, Stock) {
@@ -233,6 +241,108 @@ sap.ui.define([
             } catch (oError) {
                 console.log(oError);
             }
+        },
+
+        EstraiIDSelezionati() {
+            const oTable = this.byId("tableUser");
+            const aSelectedItems = oTable.getSelectedItems();
+            const aLibri = aSelectedItems.map(oItem =>
+                oItem.getBindingContext().getObject()
+            );
+
+            for (let index = 0; index < aLibri.length; index++) {
+                const ID = aLibri[index].ID;
+
+                return ID
+            }
+
+        },
+
+        EstraiPrezziSelezionati() {
+            const oTable = this.byId("tableUser");
+            const aSelectedItems = oTable.getSelectedItems();
+            const aLibri = aSelectedItems.map(oItem =>
+                oItem.getBindingContext().getObject()
+            );
+
+            for (let index = 0; index < aLibri.length; index++) {
+
+                const Prezzo = aLibri[index].prezzo
+                return Prezzo
+            }
+
+        },
+        RichiediFattura() {
+            debugger
+            const oTable = this.byId("tableUser");
+
+            const aSelectedItems = oTable.getSelectedItems();
+
+            const sID = this.EstraiIDSelezionati()
+
+            const iPrezzo = this.EstraiPrezziSelezionati()
+
+            const that = this;
+            if (aSelectedItems.length !== 0) {
+                MessageBox.success(
+                    "Vuoi confermare il prodotto e inviarlo a SAP Integration Suite per la fattura?",
+                    {
+                        title: "Conferma prodotto",
+                        actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
+                        emphasizedAction: MessageBox.Action.OK,
+
+                        onClose: function (oAction) {
+                            if (oAction === MessageBox.Action.OK) {
+                                that.inviaProdottoAIntegrationSuite(sID, iPrezzo);
+                            } else {
+                                MessageToast.show("Operazione annullata");
+                            }
+                        }
+                    }
+                );
+            } else {
+                MessageToast.show("Seleziona prima un libro!");
+            }
+
+
+        },
+
+        inviaProdottoAIntegrationSuite: function (ID, prezzo) {
+
+            let datiLibro = {
+                ID: ID,
+                prezzo: prezzo
+            };
+
+            fetch("/odata/v4/user/richiediConfermaIS", {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify(datiLibro)
+
+            })
+                .then(function (response) {
+                    return response.text().then(function (responseText) {
+                        return {
+                            status: response.status,
+                            ok: response.ok,
+                            body: responseText
+                        };
+                    });
+                })
+                .then(function (result) {
+                    if (result.ok) {
+                        MessageBox.success("Prodotto ricevuto correttamente. " + result.body);
+                    } else {
+                        MessageBox.error("Errore:" + result.status + result.body);
+                    }
+                })
+                .catch(function (error) {
+                    MessageBox.error("Errore chiamata:" + error.message);
+                });
         },
 
     });

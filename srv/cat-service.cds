@@ -4,6 +4,7 @@ service AdminService {
     entity Libri  as projection on db.Libri;
     entity Autore as projection on db.Autore;
 
+
     action aggiungiLibro(ID: UUID,
                          titolo: String,
                          autore: String,
@@ -11,23 +12,23 @@ service AdminService {
                          genere: String,
                          stock: Integer,
                          prezzo: Decimal(5, 2),
-                         autore_ID: UUID) returns Libri;
+                         autore_ID: UUID)                      returns Libri;
 
     action aggiungiAutore(ID: UUID,
                           autore_ID: UUID,
-                          nome: String, ) returns Autore;
+                          nome: String, )                      returns Autore;
 
-    
-    action updateLibro( ID: UUID,
-                         titolo: String,
-                         autore: String,
-                         descrizione: String,
-                         genere: String,
-                         stock: Integer,
-                         prezzo: Decimal(5, 2),
-                         autore_ID: UUID) returns Libri;
 
-    action eliminaRecord( ID: UUID) returns Libri;
+    action updateLibro(ID: UUID,
+                       titolo: String,
+                       autore: String,
+                       descrizione: String,
+                       genere: String,
+                       stock: Integer,
+                       prezzo: Decimal(5, 2),
+                       autore_ID: UUID)                        returns Libri;
+
+    action eliminaRecord(ID: UUID)                             returns Libri;
 }
 
 
@@ -35,16 +36,24 @@ service UserService {
 
     entity Libri as projection on db.Libri;
 
+    type ConfermaResponse {
+        status  : String;
+        message : String;
+        ID      : String;
+        prezzo  : Decimal(9, 2);
+    }
 
     action aggiornaStock(ID: UUID,
-                         stock: Integer)  returns Libri;
+                         stock: Integer)                       returns Libri;
+
+    action richiediConfermaIS(ID: UUID, prezzo: Decimal(5, 2)) returns ConfermaResponse;
 
 }
 
 
 service AuthService {
 
-    function getUser()                    returns String;
+    function getUser()                                         returns String;
 }
 
 //chiunque sia loggato (admin o user)  chiama AuthService
