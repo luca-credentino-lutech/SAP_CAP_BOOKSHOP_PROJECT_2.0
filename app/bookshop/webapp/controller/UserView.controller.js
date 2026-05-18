@@ -92,33 +92,48 @@ sap.ui.define([
         },
 
         InserisciCarrello() {
-            debugger;
+
             const oTable = this.byId("tableUser");
-            const oModel = this.getView().getModel("CarrelloLibri")
-            let aLibriSelezionati = oTable.getSelectedItems().map(oItem => {
-                const oCarrelloLibri = oItem.getBindingContext().getObject()
 
-                return {
+           
+            let oModelCarrello = this.getView().getModel("CarrelloLibri");
 
-                    ID: oCarrelloLibri.ID,
-                    titolo: oCarrelloLibri.titolo,
-                    descrizione: oCarrelloLibri.descrizione,
-                    quantita: 1
-
-                }
+            // Se non esiste crealo una volta sola
+            if (!oModelCarrello) {
+                oModelCarrello = new JSONModel({
+                    items: []
+                });
+                this.getView().setModel(oModelCarrello, "CarrelloLibri");
             }
-            )
 
-            const oModelCarrello = new JSONModel({
-                items: aLibriSelezionati
+        
+            let aItems = oModelCarrello.getProperty("/items");
+
+            
+            let aNuoviLibri = oTable.getSelectedItems().map(oItem => {
+                const oLibro = oItem.getBindingContext().getObject();
+                return {
+                    ID: oLibro.ID,
+                    titolo: oLibro.titolo,
+                    descrizione: oLibro.descrizione,
+                    quantita: 1
+                };
             });
 
+            // Merge con gestione duplicati
+            aNuoviLibri.forEach(oNuovo => {
+                const oEsistente = aItems.find(o => o.ID === oNuovo.ID);
+
+                if (oEsistente) {
+                    oEsistente.quantita++;
+                } else {
+                    aItems.push(oNuovo);
+                }
+            });
+
+            oModelCarrello.setProperty("/items", aItems);
 
             this.ApriCarrello(oModelCarrello);
-        },
-
-        onChiudiCarrello() {
-            this.byId("carrelloDialog").close();
         },
 
         ApriCarrello(oModelCarrello) {
@@ -139,31 +154,6 @@ sap.ui.define([
                 oDialog.open();
             });
         },
-
-
-        // MessageBox.success(`Hai acquistato ${sTitoliDisponibili}, vuoi richiedere la fattura?`, {
-        //                 title: "Acquista Libro",
-        //                 actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
-        //                 emphasizedAction: MessageBox.Action.OK,
-
-        //                 onClose: function (oAction) {
-        //                     if (oAction === MessageBox.Action.OK) {
-        //                         that.AcquistaFetch(
-        //                             SingoloLibro.ID,
-        //                             SingoloLibro.stock - 1
-        //                         );
-        //                         that.inviaProdottoAIntegrationSuite(sID[0], nPrezzo[0])
-
-        //                     } else {
-        //                         that.AcquistaFetch(
-        //                             SingoloLibro.ID,
-        //                             SingoloLibro.stock - 1
-        //                         );
-        //                     }
-        //                 }
-        //             }
-        //             )
-        //         }
 
         async onAcquistaCarrello(oEvent) {
             let oRisposta = await fetch("/odata/v4/user/Libri", {
@@ -350,7 +340,7 @@ sap.ui.define([
 
         },
 
-        inviaProdottoAIntegrationSuite (ID, prezzo) {
+        inviaProdottoAIntegrationSuite(ID, prezzo) {
 
             let datiLibro = {
                 ID: ID,
@@ -388,5 +378,8 @@ sap.ui.define([
                 });
         },
 
+        onChiudiCarrello(){
+            this.byId("carrelloDialog").close();
+        }
     });
 });

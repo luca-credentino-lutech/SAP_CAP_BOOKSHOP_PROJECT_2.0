@@ -75,7 +75,7 @@
                     class="sapUiTinyMarginBegin"
                     icon="sap-icon://cart-4"
                     id="btnNelCarrello"
-                    text="Inserisci nel carrello"
+                    text="Inserisci o Apri carrello"
                     type="Emphasized"
                     press="InserisciCarrello"
                 />
