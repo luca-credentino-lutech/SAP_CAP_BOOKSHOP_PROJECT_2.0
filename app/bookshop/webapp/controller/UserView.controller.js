@@ -12,7 +12,72 @@ sap.ui.define([
             debugger
 
         },
-   
+
+        async AcquistaLibro() {
+            const that = this
+            const oTable = this.byId("tableUser");
+            const aSelectedItems = oTable.getSelectedItems();
+
+            if (aSelectedItems.length === 0) {
+                MessageBox.error("Nessun libro selezionato");
+                return;
+            }
+
+            const aLibri = aSelectedItems.map(oItem =>
+                oItem.getBindingContext().getObject()
+            );
+
+            const aDisponibili = aLibri.filter(libro => libro.stock > 0);
+            const aNonDisponibili = aLibri.filter(libro => libro.stock === 0);
+            const sTitoliDisponibili = aDisponibili.map(elem => { return elem.titolo })
+            const sID = aDisponibili.map(elem => { return elem.ID })
+            const nPrezzo = aDisponibili.map(elem => { return elem.prezzo })
+            const sTitoloNonDisponibili = aNonDisponibili.map(elem => { return elem.titolo })
+
+            if (aDisponibili.length === 0) {
+                MessageBox.warning(`Il Libro/i: ${sTitoloNonDisponibili}, non sono disponibili, mi spiace `);
+                return;
+            }
+
+
+            if (aNonDisponibili.length > 0) {
+
+                MessageBox.warning(`Solo ${sTitoliDisponibili} è/sono disponibili, seleziona solo quello/i disponbili`);
+            }
+
+            if (aDisponibili.length > 0 && aNonDisponibili.length === 0) {
+
+                for (const SingoloLibro of aDisponibili) {
+                    MessageBox.success(`Hai acquistato ${sTitoliDisponibili}, vuoi richiedere la fattura?`, {
+                        title: "Acquista Libro",
+                        actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
+                        emphasizedAction: MessageBox.Action.OK,
+
+                        onClose: function (oAction) {
+                            if (oAction === MessageBox.Action.OK) {
+                                that.AcquistaFetch(
+                                    SingoloLibro.ID,
+                                    SingoloLibro.stock - 1
+                                );
+                                that.inviaProdottoAIntegrationSuite(sID[0], nPrezzo[0])
+
+                            } else {
+                                that.AcquistaFetch(
+                                    SingoloLibro.ID,
+                                    SingoloLibro.stock - 1
+                                );
+                            }
+                        }
+                    }
+                    )
+                }
+
+                this.getView().getModel().refresh();
+
+            }
+            oTable.removeSelections(true)
+        },
+
         onSelectionChangeLibro: function (oEvent) {
             const oTable = this.byId("tableUser");
             const oItem = oEvent.getParameter("listItem");
@@ -43,7 +108,7 @@ sap.ui.define([
                 }
             }
             )
-         
+
             const oModelCarrello = new JSONModel({
                 items: aLibriSelezionati
             });
@@ -75,51 +140,132 @@ sap.ui.define([
             });
         },
 
+
+        // MessageBox.success(`Hai acquistato ${sTitoliDisponibili}, vuoi richiedere la fattura?`, {
+        //                 title: "Acquista Libro",
+        //                 actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
+        //                 emphasizedAction: MessageBox.Action.OK,
+
+        //                 onClose: function (oAction) {
+        //                     if (oAction === MessageBox.Action.OK) {
+        //                         that.AcquistaFetch(
+        //                             SingoloLibro.ID,
+        //                             SingoloLibro.stock - 1
+        //                         );
+        //                         that.inviaProdottoAIntegrationSuite(sID[0], nPrezzo[0])
+
+        //                     } else {
+        //                         that.AcquistaFetch(
+        //                             SingoloLibro.ID,
+        //                             SingoloLibro.stock - 1
+        //                         );
+        //                     }
+        //                 }
+        //             }
+        //             )
+        //         }
+
         async onAcquistaCarrello(oEvent) {
+            let oRisposta = await fetch("/odata/v4/user/Libri", {
+                method: "GET",
 
-            try {
-                let oRisposta = await fetch("/odata/v4/user/Libri", {
-                    method: "GET",
+            });
+            let oView = this.getView()
+            let oLibriEntity = await oRisposta.json();
+            let that = this
+            MessageBox.success(`Vuoi richiedere la fattura?`, {
+                title: "Acquista Libro",
+                actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
+                emphasizedAction: MessageBox.Action.OK,
 
-                });
-                let iNuovaQuantita = 0
+                onClose: function (oAction) {
+                    if (oAction === MessageBox.Action.OK) {
 
-                const oModel = this.getView().getModel("CarrelloLibri");
+                        try {
 
-                const oLibri = oModel.getData().items
+                            let iNuovaQuantita = 0
 
-                let oLibriEntity = await oRisposta.json();
+                            const oModel = oView.getModel("CarrelloLibri");
 
-                oLibriEntity.value.map(items => {
-                    const sIDentity = items.ID
-
-                    const iQuantitaCorrente = items.stock
-
-                    oLibri.map(j => {
-                        const sIDlibroCarrello = j.ID
-
-                        const iQuantitaCarrello = j.quantita
-
-                        if (sIDlibroCarrello == sIDentity) {
-                            iNuovaQuantita = iQuantitaCorrente - iQuantitaCarrello
-
-                            this.AcquistaFetch(sIDlibroCarrello, iNuovaQuantita)
+                            const oLibri = oModel.getData().items
 
 
+
+                            oLibriEntity.value.map(items => {
+                                const sIDentity = items.ID
+
+                                const iQuantitaCorrente = items.stock
+                                const nPrezzo = items.prezzo
+
+                                oLibri.map(j => {
+                                    const sIDlibroCarrello = j.ID
+
+                                    const iQuantitaCarrello = j.quantita
+
+                                    if (sIDlibroCarrello == sIDentity) {
+                                        iNuovaQuantita = iQuantitaCorrente - iQuantitaCarrello
+
+                                        that.AcquistaFetch(sIDlibroCarrello, iNuovaQuantita)
+                                        that.inviaProdottoAIntegrationSuite(sIDlibroCarrello, nPrezzo)
+                                    }
+
+                                })
+
+                            })
+                            that.onChiudiCarrello();
+                            const oTable = this.byId("tableUser");
+                            oTable.removeSelections(true);
+                            MessageBox.success(`Pagamento andato a buon fine!`, {
+
+                            })
+
+                        } catch (oError) {
+                            console.log(oError);
                         }
+                    } else {
+                        try {
 
-                    })
+                            let iNuovaQuantita = 0
 
-                })
-                this.onChiudiCarrello();
-                const oTable = this.byId("tableUser");
-                oTable.removeSelections(true);
-                MessageBox.success(`Pagamento andato a buon fine!`);
+                            const oModel = oView.getModel("CarrelloLibri");
 
-            } catch (oError) {
-                console.log(oError);
-            }
+                            const oLibri = oModel.getData().items
 
+                            oLibriEntity.value.map(items => {
+                                const sIDentity = items.ID
+
+                                const iQuantitaCorrente = items.stock
+
+
+                                oLibri.map(j => {
+                                    const sIDlibroCarrello = j.ID
+
+                                    const iQuantitaCarrello = j.quantita
+
+                                    if (sIDlibroCarrello == sIDentity) {
+                                        iNuovaQuantita = iQuantitaCorrente - iQuantitaCarrello
+
+                                        that.AcquistaFetch(sIDlibroCarrello, iNuovaQuantita)
+
+                                    }
+
+                                })
+
+                            })
+                            this.onChiudiCarrello();
+                            const oTable = this.byId("tableUser");
+                            oTable.removeSelections(true);
+                            MessageBox.success(`Pagamento andato a buon fine!`, {
+
+                            })
+
+                        } catch (oError) {
+                            console.log(oError);
+                        }
+                    }
+                }
+
+            })
         },
 
         onItemActionPress(oEvent) {
@@ -150,51 +296,6 @@ sap.ui.define([
 
             }
         },
-        async AcquistaLibro() {
-            const oTable = this.byId("tableUser");
-            const aSelectedItems = oTable.getSelectedItems();
-
-            if (aSelectedItems.length === 0) {
-                MessageBox.error("Nessun libro selezionato");
-                return;
-            }
-
-            const aLibri = aSelectedItems.map(oItem =>
-                oItem.getBindingContext().getObject()
-            );
-
-            const aDisponibili = aLibri.filter(libro => libro.stock > 0);
-            const aNonDisponibili = aLibri.filter(libro => libro.stock === 0);
-            const sTitoliDisponibili = aDisponibili.map(elem => { return elem.titolo })
-            const sTitoloNonDisponibili = aNonDisponibili.map(elem => { return elem.titolo })
-
-            if (aDisponibili.length === 0) {
-                MessageBox.warning(`Il Libro/i: ${sTitoloNonDisponibili}, non sono disponibili, mi spiace `);
-                return;
-            }
-
-
-            if (aNonDisponibili.length > 0) {
-
-                MessageBox.warning(`Solo ${sTitoliDisponibili} è/sono disponibili, seleziona solo quello/i disponbili`);
-            }
-
-            if (aDisponibili.length > 0 && aNonDisponibili.length === 0) {
-
-                for (const SingoloLibro of aDisponibili) {
-                    await this.AcquistaFetch(
-                        SingoloLibro.ID,
-                        Number(SingoloLibro.stock) - 1
-                    );
-                }
-
-                this.getView().getModel().refresh();
-                MessageBox.success(`Hai acquistato ${sTitoliDisponibili}`)
-
-
-            }
-            oTable.removeSelections(true)
-        },
 
         async AcquistaFetch(ID, Stock) {
             let oPayloadStock = {
@@ -211,7 +312,7 @@ sap.ui.define([
                 });
                 let oLibroAggiornato = await oRisposta.json();
                 let oModel = this.getView().getModel();
-
+                MessageToast.show("Operazione andata buon fine");
                 oModel.refresh()
 
             } catch (oError) {
@@ -248,49 +349,8 @@ sap.ui.define([
             }
 
         },
-        RichiediFattura() {
-            debugger
-            const oTable = this.byId("tableUser");
 
-            const aSelectedItems = oTable.getSelectedItems();
-
-            const sID = this.EstraiIDSelezionati()
-
-            const iPrezzo = this.EstraiPrezziSelezionati()
-
-            const that = this;
-            if(aSelectedItems.length > 1 ){
-                MessageToast.show("Seleziona solo un libro!");
-                return;
-            
-            }
-            if (aSelectedItems.length !== 0) {
-                MessageBox.success(
-                    "Vuoi confermare il prodotto e inviarlo a SAP Integration Suite per la fattura?",
-                    {
-                        title: "Conferma prodotto",
-                        actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
-                        emphasizedAction: MessageBox.Action.OK,
-
-                        onClose: function (oAction) {
-                            if (oAction === MessageBox.Action.OK) {
-                                that.inviaProdottoAIntegrationSuite(sID, iPrezzo);
-                            } else {
-                                MessageToast.show("Operazione annullata");
-                            }
-                        }
-                    }
-                );
-            }else{
-                
-                MessageToast.show("Seleziona prima un libro!");
-        
-            }
-
-
-        },
-
-        inviaProdottoAIntegrationSuite: function (ID, prezzo) {
+        inviaProdottoAIntegrationSuite (ID, prezzo) {
 
             let datiLibro = {
                 ID: ID,
