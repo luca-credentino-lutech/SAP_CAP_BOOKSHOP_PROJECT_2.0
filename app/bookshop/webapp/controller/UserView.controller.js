@@ -9,7 +9,6 @@ sap.ui.define([
 
     return Controller.extend("bookshop.controller.UserView", {
         onInit() {
-            debugger
 
         },
 
@@ -116,6 +115,7 @@ sap.ui.define([
                     ID: oLibro.ID,
                     titolo: oLibro.titolo,
                     descrizione: oLibro.descrizione,
+                    stock: oLibro.stock,
                     quantita: 1
                 };
             });
@@ -163,6 +163,7 @@ sap.ui.define([
 
 
         async onAcquistaCarrello(oEvent) {
+            debugger;
             let oRisposta = await fetch("/odata/v4/user/Libri", {
                 method: "GET",
 
@@ -175,10 +176,11 @@ sap.ui.define([
             let oLibriEntity = await oRisposta.json();
             let that = this
             
-            if (!oLibri) {
-                console.log(idBtnAcquistaCarrello)
-                idBtnAcquistaCarrello.setEnabled(false)
+            if (oLibri[0] === undefined) {
+                MessageBox.error("Carrello Vuoto");
+                return;
             }
+
             MessageBox.success(`Vuoi richiedere la fattura?`, {
                 title: "Acquista Libro",
                 actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
@@ -268,6 +270,7 @@ sap.ui.define([
         },
 
         onItemActionPress(oEvent) {
+            
             const oModel = this.getView().getModel("CarrelloLibri");
 
             const oItem = oEvent.getParameter("listItem");
@@ -280,7 +283,12 @@ sap.ui.define([
 
             const iQuantitaAttuale = oModel.getProperty(sPath + "/quantita");
 
+            const iStockAttuale = oModel.getProperty(sPath + "/stock");
 
+            if(iStockAttuale == iQuantitaAttuale){
+                MessageBox.error("Non Puoi aggiungere altri libri nel carrello");
+                return;
+            }
             if (oAction.getText() == "Aggiungi") {
                 oModel.setProperty(sPath + "/quantita", iQuantitaAttuale + 1);
             }
