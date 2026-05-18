@@ -11,8 +11,8 @@
             <Input id="InputDescr" class="sapUiTinyMarginTop" required="true" placeholder="Descrizione" value="" />
             <Input id="InputGenere" class="sapUiTinyMarginTop" required="true" placeholder="Genere" value="" />
             <Input id="InputAutore" class="sapUiTinyMarginTop" required="true" placeholder="Autore" value="" />
-            <Input id="InputStock" class="sapUiTinyMarginTop" required="true" type="Number" placeholder="Stock" value="" />
-            <Input id="InputPrezzo" class="sapUiTinyMarginTop" required="true" type="Number" placeholder="Prezzo" value="" />
+            <Input id="InputStock" liveChange="nonPuoEssereZero" class="sapUiTinyMarginTop" required="true" type="Number" placeholder="Stock" value="" />
+            <Input id="InputPrezzo" liveChange="nonPuoEssereZero" class="sapUiTinyMarginTop" required="true" type="Number" placeholder="Prezzo" value="" />
         </VBox>
 
         <beginButton>

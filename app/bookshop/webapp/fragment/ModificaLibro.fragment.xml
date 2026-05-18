@@ -17,9 +17,9 @@
             <Text class="sapUiTinyMarginTop" text="Autore:" ></Text>
             <Input id="InputAutore2" class="sapUiTinyMarginTop" required="true" placeholder="Autore" value="" />
             <Text class="sapUiTinyMarginTop" text="Quantità:" ></Text>
-            <Input id="InputStock2" class="sapUiTinyMarginTop" required="true" type="Number" placeholder="Stock" value="" />
+            <Input id="InputStock2" class="sapUiTinyMarginTop"  liveChange="nonPuoEssereZero" required="true" type="Number" placeholder="Stock" value=""  />
             <Text class="sapUiTinyMarginTop" text="Prezzo:" ></Text>
-            <Input id="InputPrezzo2" class="sapUiTinyMarginTop" required="true" type="Number" placeholder="Prezzo" value="" />
+            <Input id="InputPrezzo2" class="sapUiTinyMarginTop" liveChange="nonPuoEssereZero" required="true" type="Number" placeholder="Prezzo" value="" />
             <Input visible="false" id="InputAutoreID" value=""  ></Input>
         </VBox>
 

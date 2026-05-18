@@ -57,6 +57,17 @@ sap.ui.define([
             return this.ModificaLibroDialog;
         },
 
+        nonPuoEssereZero(oEvent) {
+            const oInput = oEvent.getSource();
+            let iValue = parseInt(oInput.getValue(), 10);
+
+            if (iValue <= 0) {
+                oInput.setValueState("Error");
+                oInput.setValueStateText("Il valore non può essere negativo o 0");
+            } else {
+                oInput.setValueState("None");
+            }
+        },
 
         onChiudi() {
             this.byId("aggiungiLibroID").close();
@@ -76,6 +87,7 @@ sap.ui.define([
             const aTuttiIcampi = [sTitolo, sAutore, sGenere, sDescrizione, iStock, dPrezzo];
             const sAutoreID = crypto.randomUUID();
 
+
             const oPayloadAutore = {
                 ID: sAutoreID,
                 nome: sAutore.getValue()
@@ -91,9 +103,12 @@ sap.ui.define([
             };
 
             for (const i of aTuttiIcampi) {
-                if (i.getValue() == "") {
+                if (i.getValue() === "") {
                     MessageBox.error("Compila tutti i campi obbligatori!");
                     return;
+                }
+                if (Number(iStock.getValue()) <= 0 || Number(dPrezzo.getValue()) <= 0) {
+                    return MessageBox.error("La Quantità o il Prezzo non possono essere 0, negativi o non compilati")
                 }
             }
 
@@ -199,6 +214,7 @@ sap.ui.define([
         },
 
         async onModificaLibro() {
+            debugger
             const ID = this.byId("InputID")
             const sGenere = this.byId("InputGenere2")
             const sTitolo = this.byId("InputTitolo2");
@@ -208,6 +224,9 @@ sap.ui.define([
             const dPrezzo = this.byId("InputPrezzo2");
             const sAutoreID = this.byId("InputAutoreID")
 
+            if (Number(iStock.getValue()) <= 0 || Number(dPrezzo.getValue()) <= 0) {
+                return MessageBox.error("La Quantità o il Prezzo non possono essere 0")
+            }
             const oPayloadLibroAggiornato = {
                 ID: ID.getValue(),
                 titolo: sTitolo.getValue(),

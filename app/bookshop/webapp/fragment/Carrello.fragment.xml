@@ -37,7 +37,7 @@
 		</StandardListItem>	
 	</List>
 	<HBox >
-	<Button class="sapUiTinyMargin" icon="sap-icon://credit-card" press="onAcquistaCarrello" ></Button>
+	<Button id="acquistaCarrello" class="sapUiTinyMargin" icon="sap-icon://credit-card" press="onAcquistaCarrello" ></Button>
 	<Button class="sapUiTinyMargin" icon="sap-icon://decline" press="onChiudiCarrello" ></Button>
 	</HBox>
     </Dialog>

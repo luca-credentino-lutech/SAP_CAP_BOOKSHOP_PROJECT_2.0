@@ -95,7 +95,7 @@ sap.ui.define([
 
             const oTable = this.byId("tableUser");
 
-           
+
             let oModelCarrello = this.getView().getModel("CarrelloLibri");
 
             // Se non esiste crealo una volta sola
@@ -106,10 +106,10 @@ sap.ui.define([
                 this.getView().setModel(oModelCarrello, "CarrelloLibri");
             }
 
-        
+
             let aItems = oModelCarrello.getProperty("/items");
 
-            
+
             let aNuoviLibri = oTable.getSelectedItems().map(oItem => {
                 const oLibro = oItem.getBindingContext().getObject();
                 return {
@@ -155,14 +155,30 @@ sap.ui.define([
             });
         },
 
+        resetModello() {
+
+            let oModelCarrello = this.getView().getModel("CarrelloLibri");
+            oModelCarrello.setProperty("/items", []);
+        },
+
+
         async onAcquistaCarrello(oEvent) {
             let oRisposta = await fetch("/odata/v4/user/Libri", {
                 method: "GET",
 
             });
+           
             let oView = this.getView()
+            let idBtnAcquistaCarrello = oView.byId("acquistaCarrello")
+            let oModel = oView.getModel("CarrelloLibri");
+            let oLibri = oModel.getData().items
             let oLibriEntity = await oRisposta.json();
             let that = this
+            
+            if (!oLibri) {
+                console.log(idBtnAcquistaCarrello)
+                idBtnAcquistaCarrello.setEnabled(false)
+            }
             MessageBox.success(`Vuoi richiedere la fattura?`, {
                 title: "Acquista Libro",
                 actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
@@ -174,12 +190,6 @@ sap.ui.define([
                         try {
 
                             let iNuovaQuantita = 0
-
-                            const oModel = oView.getModel("CarrelloLibri");
-
-                            const oLibri = oModel.getData().items
-
-
 
                             oLibriEntity.value.map(items => {
                                 const sIDentity = items.ID
@@ -197,18 +207,18 @@ sap.ui.define([
 
                                         that.AcquistaFetch(sIDlibroCarrello, iNuovaQuantita)
                                         that.inviaProdottoAIntegrationSuite(sIDlibroCarrello, nPrezzo)
+
+
                                     }
 
                                 })
 
                             })
                             that.onChiudiCarrello();
-                            const oTable = this.byId("tableUser");
+                            const oTable = that.byId("tableUser");
                             oTable.removeSelections(true);
-                            MessageBox.success(`Pagamento andato a buon fine!`, {
-
-                            })
-
+                            MessageBox.success(`Pagamento andato a buon fine!`)
+                            that.resetModello()
                         } catch (oError) {
                             console.log(oError);
                         }
@@ -242,12 +252,11 @@ sap.ui.define([
                                 })
 
                             })
-                            this.onChiudiCarrello();
-                            const oTable = this.byId("tableUser");
+                            that.onChiudiCarrello();
+                            const oTable = that.byId("tableUser");
                             oTable.removeSelections(true);
-                            MessageBox.success(`Pagamento andato a buon fine!`, {
-
-                            })
+                            MessageBox.success(`Pagamento andato a buon fine!`)
+                            that.resetModello()
 
                         } catch (oError) {
                             console.log(oError);
@@ -282,6 +291,7 @@ sap.ui.define([
 
                 if (iNuovaQuantita == 0) {
                     oItem.mProperties = {}
+                    oModel.setProperty(sPath, {})
                 }
 
             }
@@ -378,7 +388,7 @@ sap.ui.define([
                 });
         },
 
-        onChiudiCarrello(){
+        onChiudiCarrello() {
             this.byId("carrelloDialog").close();
         }
     });
